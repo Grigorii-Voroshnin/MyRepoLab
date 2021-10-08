@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - mongo_net
+
+  data_base_init:
+    build: DataBase
+    environment:
+      - TZ=Europe/Moscow
+      - MONGO_DB_PORT=27017
+    networks:
+      - mongo_net
+
+  web_service:
+    build: TimeServer
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=Europe/Moscow
+
+networks:
+  mongo_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
